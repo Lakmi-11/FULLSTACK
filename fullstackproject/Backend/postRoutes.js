@@ -8,7 +8,7 @@ let postRoutes = express.Router();
 postRoutes.route("/posts").get(async (request, response) => {
   try {
     let db = database.getDb();
-    let data = await db.collection("posts").find({}).toArray();
+    let data = await db.collection("inventorydata").find({}).toArray();
 
     if (data.length > 0) {
       response.json(data);
@@ -24,7 +24,7 @@ postRoutes.route("/posts").get(async (request, response) => {
 postRoutes.route("/posts/:id").get(async (request, response) => {
   try {
     let db = database.getDb();
-    let data = await db.collection("posts").findOne({ _id: new ObjectId(request.params.id) });
+    let data = await db.collection("inventorydata").findOne({ _id: new ObjectId(request.params.id) });
 
     if (data) {
       response.json(data);
@@ -48,7 +48,7 @@ postRoutes.route("/posts").post(async (request, response) => {
       Materials: request.body.Materials,
     };
 
-    let data = await db.collection("posts").insertOne(mongoObject);
+    let data = await db.collection("inventorydata").insertOne(mongoObject);
     response.json(data);
   } catch (error) {
     response.status(500).json({ error: error.message });
@@ -69,7 +69,7 @@ postRoutes.route("/posts/:id").put(async (request, response) => {
       },
     };
 
-    let data = await db.collection("posts").updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
+    let data = await db.collection("inventorydata").updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
     response.json(data);
   } catch (error) {
     response.status(500).json({ error: error.message });
@@ -80,7 +80,7 @@ postRoutes.route("/posts/:id").put(async (request, response) => {
 postRoutes.route("/posts/:id").delete(async (request, response) => {
   try {
     let db = database.getDb();
-    let data = await db.collection("posts").deleteOne({ _id: new ObjectId(request.params.id) });
+    let data = await db.collection("inventorydata").deleteOne({ _id: new ObjectId(request.params.id) });
 
     if (data.deletedCount > 0) {
       response.json({ message: "Record deleted successfully" });
