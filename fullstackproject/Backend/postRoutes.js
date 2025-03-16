@@ -1,67 +1,95 @@
-const express = require("express")
-const database = require("./connect")
-const objectId = require("mongodb").ObjectId
+const express = require("express");
+const database = require("./connect");
+const { ObjectId } = require("mongodb");
 
-let postRoutes = express.Router()
+let postRoutes = express.Router();
+
 //#1 - Retrieve All
-//http://localhost:300/posts
 postRoutes.route("/posts").get(async (request, response) => {
-   let db = database.getDb()
-   let data =await collection("posts").find({}).toArray()
-   if (data.length >0) {
-          response.json(data)
-   }else {
-      throw new Error("Data was not found: (")
-   }
-})
+  try {
+    let db = database.getDb();
+    let data = await db.collection("posts").find({}).toArray();
+
+    if (data.length > 0) {
+      response.json(data);
+    } else {
+      response.status(404).json({ error: "No data found" });
+    }
+  } catch (error) {
+    response.status(500).json({ error: error.message });
+  }
+});
 
 //#2 - Retrieve One
-//http://localhost:3000/posts/12345
 postRoutes.route("/posts/:id").get(async (request, response) => {
-   let db = database.getDb()
-   let data =await collection("posts").findOne({_id: request.params.id})
-   if (object.keys(data).length >0) {
-          response.json(data)
-   }else {
-      throw new Error("Data was not found: (")
-   }
-})
+  try {
+    let db = database.getDb();
+    let data = await db.collection("posts").findOne({ _id: new ObjectId(request.params.id) });
 
- //#3-Create one
- postRoutes.route("/posts").post(async (request, response) => {
-   let db = database.getDb()
-   let mongoObject = {
-                date: request.body.date,
-                Weight: request.body. Weight,
-                inventroyManagerName: request.body.inventroyManagerName,
-                CustomerName: request.body.CustomerName,
-                Materials: request.body.Materials
-
-   }
-   let data =await collection("posts").insertOne(mongoObject)
-   response.json(data)
-})
-
-//#4 - Update one 
-postRoutes.route("/posts/:id").put(async (request, response) => {
-   let db = database.getDb()
-   let mongoObject = {
-               $set: {
-                  date: request.body.date,
-                  Weight: request.body. Weight,
-                  inventroyManagerName: request.body.inventroyManagerName,
-                  CustomerName: request.body.CustomerName,
-                  Materials: request.body.Materials
+    if (data) {
+      response.json(data);
+    } else {
+      response.status(404).json({ error: "Data not found" });
+    }
+  } catch (error) {
+    response.status(400).json({ error: "Invalid ID format" });
   }
-   }
-   let data =await collection("posts").updateOne({_id: new objectId(request.params.id)}, mongoObject)
-   response.json(data)
-})
-//#5 - Delete one 
-postRoutes.route("/posts/:id").delete(async (request, response) => {
-   let db = database.getDb()
-   let data =await collection("posts").deleteOne({_id: request.params.id})
-  response.json(data)
-})
+});
 
-module.exports = postRoutes
+//#3 - Create One
+postRoutes.route("/posts").post(async (request, response) => {
+  try {
+    let db = database.getDb();
+    let mongoObject = {
+      date: request.body.date,
+      Weight: request.body.Weight,
+      inventoryManagerName: request.body.inventoryManagerName,
+      CustomerName: request.body.CustomerName,
+      Materials: request.body.Materials,
+    };
+
+    let data = await db.collection("posts").insertOne(mongoObject);
+    response.json(data);
+  } catch (error) {
+    response.status(500).json({ error: error.message });
+  }
+});
+
+//#4 - Update One
+postRoutes.route("/posts/:id").put(async (request, response) => {
+  try {
+    let db = database.getDb();
+    let mongoObject = {
+      $set: {
+        date: request.body.date,
+        Weight: request.body.Weight,
+        inventoryManagerName: request.body.inventoryManagerName,
+        CustomerName: request.body.CustomerName,
+        Materials: request.body.Materials,
+      },
+    };
+
+    let data = await db.collection("posts").updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
+    response.json(data);
+  } catch (error) {
+    response.status(500).json({ error: error.message });
+  }
+});
+
+//#5 - Delete One
+postRoutes.route("/posts/:id").delete(async (request, response) => {
+  try {
+    let db = database.getDb();
+    let data = await db.collection("posts").deleteOne({ _id: new ObjectId(request.params.id) });
+
+    if (data.deletedCount > 0) {
+      response.json({ message: "Record deleted successfully" });
+    } else {
+      response.status(404).json({ error: "Data not found" });
+    }
+  } catch (error) {
+    response.status(500).json({ error: error.message });
+  }
+});
+
+module.exports = postRoutes;
