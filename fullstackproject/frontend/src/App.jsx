@@ -1,12 +1,14 @@
 import './App.css'
 import {HashRouter as Router, Routes, Route} from "react-router-dom"
-import { About } from '../pages/About'
-import {Contact} from '../pages/Contact'
-import {Createblog} from '../pages/Createblog'
-import {Home} from '../pages/Home'
-import {Landing} from '../pages/Landing'
-import {Profile} from '../pages/Profile'
-import {ReadBlog} from '../pages/ReadBlog'
+import { About } from './pages/About'
+import {Contact} from './pages/Contact'
+import {Createblog} from './pages/Createblog'
+import {Home} from './pages/Home'
+import {Landing} from './pages/Landing'
+import {Profile} from './pages/Profile'
+import {ReadBlog} from './pages/ReadBlog'
+import { Navbar } from './Componants/Navbar'
+import { Layout} from './Componants/Layout'
 
 function App() {
 
@@ -24,12 +26,14 @@ function App() {
     <Router>
        <Routes>
         <Route path="/" element={<Landing/>}/>
+        <Route element={<Layout/>}>
         <Route path="/home" element={<Home/>}/>
         <Route path="/createblog" element={<Createblog/>}/>
         <Route path="/readblog" element={<ReadBlog/>}/>
         <Route path="/profile" element={<Profile/>}/>
         <Route path="/About" element={<About/>}/>
         <Route path="/contact" element={<Contact/>}/>
+        </Route>
        </Routes>
     </Router>
   )
