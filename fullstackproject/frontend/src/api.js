@@ -71,7 +71,7 @@ export async function verifyUser(user) {
     const response = await axios.post(`${URL}/users/login`, user);
 
     if (response.status === 200 && response.data && response.data.success) {
-        return response.data.user;
+        return response.data.token;
     } else {
         return null;
     }

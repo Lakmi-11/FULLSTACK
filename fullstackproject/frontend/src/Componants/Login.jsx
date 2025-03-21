@@ -1,6 +1,7 @@
 import { verifyUser } from "../api";
 import { useState } from "react";
 import {useNavigate} from "react-router-dom";
+import axios from "axios";
 
 export function Login() {
   const [user, setUser] = useState({
@@ -19,6 +20,8 @@ export function Login() {
     let response = await verifyUser(user); // Send user data
     if(response) {
         navigate("/home")
+        sessionStorage.setItem("User", response)
+        axios.defaults.headers.common["Authorization"] = `Bearer ${response}`
     }else{
     alert("Login Failed")
   }
