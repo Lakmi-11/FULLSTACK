@@ -1,5 +1,5 @@
-import { CreateUser } from "../Componants/CreateUser";
-import { Login } from "../Componants/Login";
+import { CreateUser } from "../Components/CreateUser";
+import { Login } from "../Components/Login";
 import { useState } from "react";
 
 
